@@ -6,9 +6,16 @@ var XPathUtils = require("xpath-react/utils");
 
 /* eslint-disable no-unused-vars */
 var React = require("react");
+var ReactTestUtils = require("react-addons-test-utils");
 
 var List = require("../lib/list_component");
 /* eslint-enable no-unused-vars */
+
+function render(el) {
+  var shallowRenderer = ReactTestUtils.createRenderer();
+  shallowRenderer.render(el);
+  return shallowRenderer.getRenderOutput();
+} 
 
 describe("ListComponent", function () {
   describe("when isLoading is true", function () {
@@ -23,7 +30,7 @@ describe("ListComponent", function () {
     it("should render the given items", function () {
       var items = ["foo", "bar"];
 
-      var element = XPathUtils.render(<List isLoading={false} items={items} />);
+      var element = render(<List isLoading={false} items={items} />);
 
       element.should.have.xpath(".//li[contains(., 'foo')]");
       element.should.have.xpath(".//li[contains(., 'bar')]");
@@ -32,7 +39,7 @@ describe("ListComponent", function () {
     it("should render a delete button for each item", function () {
       var items = ["foo", "bar"];
 
-      var element = XPathUtils.render(<List isLoading={false} items={items} />);
+      var element = render(<List isLoading={false} items={items} />);
 
       element.should.have.xpath(".//li[contains(., 'foo')]/button[contains(., 'Delete')]");
       element.should.have.xpath(".//li[contains(., 'bar')]/button[contains(., 'Delete')]");
@@ -43,15 +50,15 @@ describe("ListComponent", function () {
 
       var onRemove = this.sinon.spy();
 
-      var element = XPathUtils.render(<List isLoading={false} items={items} onRemove={onRemove} />);
+      var element = render(<List isLoading={false} items={items} onRemove={onRemove} />);
 
-      XPathUtils.Simulate.click(element, ".//button[contains(., 'Delete')]");
+      ReactTestUtils.Simulate.click(XPathUtils.find(".//button[contains(., 'Delete')]", element));
 
       onRemove.should.have.been.calledWith(0);
     });
 
     it("should render the given form value", function () {
-      var element = XPathUtils.render(<List isLoading={false} formValue="foo" />);
+      var element = render(<List isLoading={false} formValue="foo" />);
 
       var textarea = XPathUtils.find(element, ".//textarea");
 
@@ -59,7 +66,7 @@ describe("ListComponent", function () {
     });
 
     it("should render an add item button", function () {
-      var element = XPathUtils.render(<List isLoading={false} />);
+      var element = render(<List isLoading={false} />);
 
       element.should.have.xpath(".//button[contains(., 'Add')]");
     });
@@ -67,7 +74,7 @@ describe("ListComponent", function () {
     it("should invoke a callback upon pressing the add button", function () {
       var onAdd = this.sinon.spy();
 
-      var element = XPathUtils.render(<List isLoading={false} onAdd={onAdd} formValue="foo" />);
+      var element = render(<List isLoading={false} onAdd={onAdd} formValue="foo" />);
 
       XPathUtils.Simulate.click(element, ".//button[contains(., 'Add')]");
 

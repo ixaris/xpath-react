@@ -85,19 +85,37 @@ var XPathUtils = {
         return result.booleanValue;
     }
   },
-
-  findReactRoot: function(path, element) {
-    var xpath = path || ".//*[@data-reactroot]";
-    var xpathResult = window.document.evaluate(xpath, element || window.document.documentElement, null, window.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-    if (xpathResult.snapshotLength == 0) {
-      throw "No react application root was found with path " + xpath;
-    } else if (xpathResult.snapshotLength > 1) {
-      throw "Multiple react application roots were found with path " + xpath;
+  
+  findAny: function(element, expression) {
+    // check params and swap if necessary, since parameters are in reverse order to evaluate()
+    if (typeof element === "string") {
+      var tmp = element;
+      element = expression;
+      expression = tmp;
     }
-    return ReactInternals.findTopLevelCompositeComponentAtDOMNode(xpathResult.snapshotItem(0));
+
+    var result = XPathEvaluator.evaluate(expression, element, null, XPathEvaluator.XPathResult.UNORDERED_NODE_ITERATOR_TYPE);
+    
+    var results = [];
+    var el;
+    while ((el = result.iterateNext())) {
+      results.push(el);
+    }
+    return results;
   },
 
   simulate: function(element, event, eventData) {
+    if (typeof element === "string") {
+      var tmp = element;
+      element = eventData;
+      eventData = event;
+      event = tmp;
+    }
+
+    if (!element) {
+      element = eventData;
+      eventData = null;
+    }
     var eventName = handlerNameFromEvent(event);
     var handler = element.props[eventName];
     handler && handler(eventData);

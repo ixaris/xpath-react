@@ -27,8 +27,9 @@
     "lib"
   ],
   "scripts": {
-    "test": "mocha --reporter dot --ui tdd --compilers js:babel/register test/**/*_test.js",
-    "test-cover": "istanbul cover --report lcov node_modules/mocha/bin/_mocha -- --reporter dot --ui tdd --compilers js:babel/register test/**/*_test.js"
+    "lint": "./node_modules/.bin/eslint .",    
+    "test": "./node_modules/.bin/_mocha --reporter dot --ui tdd --compilers js:babel/register test/**/*_test.js",
+    "test-cover": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha -- --reporter dot --ui tdd --compilers js:babel/register test/**/*_test.js"
   },
   "license": "MIT"
 }

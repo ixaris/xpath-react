@@ -10,5 +10,9 @@
     "sinon": "1.16.1",
     "sinon-chai": "2.8.0",
     "xpath-react": "badeball/xpath-react"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint .",    
+    "test": "./node_modules/.bin/_mocha --compilers js:babel/register"
   }
 }
